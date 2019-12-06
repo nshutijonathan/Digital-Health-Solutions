@@ -1,0 +1,68 @@
+{
+  "name": "digital-health-solutions",
+  "version": "1.0.0",
+  "description": "Digital Health is an online platform that connects patients with doctors",
+  "main": "server.js",
+  "engines": {
+    "node": "10.16.0",
+    "npm": "6.10.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=production node --require @babel/register server/database/db Createtables && cross-env NODE_ENV=production node --require @babel/register server/database/db AdminIndex && cross-env NODE_ENV=production babel-node server/server.js",
+    "dev": " cross-env NODE_ENV=development node --require @babel/register server/database/db CreateTables && node --require @babel/register server/database/db AdminIndex && nodemon --exec babel-node --presets @babel/preset-env server/server.js",
+    "create": "cross-env NODE_ENV=development && node --require @babel/register server/database/db CreateTables && node --require @babel/register server/database/db AdminIndex",
+    "drop": "cross-env NODE_ENV=development node --require @babel/register server/database/db Droptables"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/node": "^7.7.4",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.5",
+    "@babel/register": "^7.7.4",
+    "bcrypt": "^3.0.7",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cloudinary": "^1.17.0",
+    "coveralls": "^3.0.9",
+    "cross-env": "^6.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-passport-logout": "^0.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.isempty": "^4.4.0",
+    "make-runnable": "^1.3.6",
+    "moment": "^2.24.0",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.4.0",
+    "nodemon": "^2.0.1",
+    "nyc": "^14.1.1",
+    "passport": "^0.4.1",
+    "passport-http": "^0.3.0",
+    "pg": "^7.14.0",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.2",
+    "uuid": "^3.3.3",
+    "uuidv4": "^6.0.0",
+    "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-auto-fix": "^1.0.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nshutijonathan/Digital-Health-Solutions.git"
+  },
+  "author": "Jonathan Nshuti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nshutijonathan/Digital-Health-Solutions/issues"
+  },
+  "homepage": "https://github.com/nshutijonathan/Digital-Health-Solutions#readme"
+}
