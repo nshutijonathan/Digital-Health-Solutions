@@ -8,12 +8,12 @@ if (process.env.NODE_ENV === 'development') {
   });
   pool.on('connect', () => {});
   
-} else if ((process.env.NODE_ENV = 'testing')) {
+} else if ((process.env.NODE_ENV ==='testing')) {
   pool = new Pool({
     connectionString: process.env.TESTINGDATABASE
   });
   pool.on('connect', () => {});
-} else if ((process.env.NODE_ENV = 'production')) {
+} else if ((process.env.NODE_ENV === 'production')) {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL
   });

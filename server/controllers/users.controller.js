@@ -210,7 +210,7 @@ const Users = {
   async approveUsers(req, res) {
     try {
       const userEmail = req.params.email;
-      const findUser = 'SELECT * FROM users WHERE email=$1';
+      const findUser = `SELECT * FROM users WHERE email=$1 `;
       // const gottenUsers = await pool.query(findUser);
       // console.log('gootenUsers', gottenUsers);
       const foundUser = await pool.query(findUser, [userEmail]);
@@ -227,7 +227,8 @@ const Users = {
           message: `User with email ${req.params.email} is already approved`
         });
       }
-      const approveUser = 'UPDATE users SET approved=$1 WHERE email=$2';
+      const approveUser =
+        'UPDATE users SET approved=$1 WHERE email=$2 RETURNING *';
       const { rows } = await pool.query(approveUser, [
         req.body.approved,
         userEmail
@@ -272,6 +273,27 @@ const Users = {
       });
     } catch (error) {
       return error.message;
+    }
+  },
+  async deleteOneUser(req, res) {
+    const userEmail = req.params.email;
+    const deleteQuery = 'DELETE FROM users WHERE email=$1 ';
+    try {
+      const { rows } = await pool.query(deleteQuery, [userEmail]);
+      if (!rows[0]) {
+        return res.status(404).send({
+          status: 404,
+          message: `User with email ${req.params.email} is not found`
+        });
+      }
+      return res.status(200).send({
+        status: 200,
+        message: `User with email ${req.params.email} is succesfully deleted`
+      });
+    } catch (error) {
+      if (error) {
+        return error.message;
+      }
     }
   }
 };

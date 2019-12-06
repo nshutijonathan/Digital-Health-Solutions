@@ -10,17 +10,18 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // home route
-dotenv.config();
 
 app.use(router);
 app.use(method);
+dotenv.config();
 app.get('/', (req, res) => {
   return res.status(200).send({
     status: 200,
-    message: 'welcome to Digital Health Solutions'
+    message: 'Welcome to Digital Health Solutions'
   });
 });
 // process environment
 const port = process.env.PORT || 3000;
 app.listen(port, console.log(`app is listening on port ${port}`));
 export default app;
+

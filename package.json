@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production node --require @babel/register server/database/db Createtables && cross-env NODE_ENV=production node --require @babel/register server/database/db AdminIndex && cross-env NODE_ENV=production babel-node server/server.js",
+    "start": "cross-env NODE_ENV=production node --require @babel/register server/database/db CreateTables && cross-env NODE_ENV=production node --require @babel/register server/database/db AdminIndex && cross-env NODE_ENV=production babel-node server/server.js",
     "dev": " cross-env NODE_ENV=development node --require @babel/register server/database/db CreateTables && node --require @babel/register server/database/db AdminIndex && nodemon --exec babel-node --presets @babel/preset-env server/server.js",
     "create": "cross-env NODE_ENV=development && node --require @babel/register server/database/db CreateTables && node --require @babel/register server/database/db AdminIndex",
     "drop": "cross-env NODE_ENV=development node --require @babel/register server/database/db Droptables"

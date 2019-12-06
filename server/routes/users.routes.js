@@ -9,6 +9,11 @@ router.post('/api/v1/users/login', Users.login);
 router.get('/api/v1/users/logout', [auth], Users.logout);
 router.get('/api/v1/users/me', [auth], Users.currentUsers);
 router.get('/api/v1/users/all', [auth, admin], Users.allUsers);
+router.delete(
+  '/api/v1/users/delete/:email',
+  [auth, admin],
+  Users.deleteOneUser
+);
 router.put(
   '/api/v1/users/doctors/approve/:email',
   [auth, admin],
