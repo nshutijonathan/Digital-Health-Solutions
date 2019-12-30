@@ -17,7 +17,7 @@ dotenv.config();
 app.get('/', (req, res) => {
   return res.status(200).send({
     status: 200,
-    message: 'welcome to Digital Health Solutions'
+    message: 'Welcome to Digital Health Solutions'
   });
 });
 // process environment
