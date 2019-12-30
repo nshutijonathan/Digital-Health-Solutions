@@ -2,9 +2,15 @@ import express from 'express';
 import Users from '../controllers/users.controller';
 import auth from '../middlewares/auth';
 import admin from '../middlewares/admin';
+import UsersValidators from '../validations/users';
+import signup from '../validations/users';
 const router = express();
-router.post('/api/v1/users/register', Users.create);
-router.post('/api/v1/users/register/admins', [auth, admin], Users.adminCreate);
+router.post('/api/v1/users/register', [signup], Users.create);
+router.post(
+  '/api/v1/users/register/admins',
+  [signup, auth, admin],
+  Users.adminCreate
+);
 router.post('/api/v1/users/login', Users.login);
 router.get('/api/v1/users/logout', [auth], Users.logout);
 router.get('/api/v1/users/me', [auth], Users.currentUsers);

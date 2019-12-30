@@ -9,7 +9,7 @@ const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
     const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,createdon) VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8) returning *`;
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`;
     const values = [
       req.body.email,
       req.body.firstname,
@@ -276,11 +276,10 @@ const Users = {
     }
   },
   async deleteOneUser(req, res) {
-    const userEmail = req.params.email;
-    const deleteQuery = 'DELETE FROM users WHERE email=$1 ';
+    const deleteQuery = 'DELETE FROM users WHERE email=$1 RETURNING *';
     try {
-      const { rows } = await pool.query(deleteQuery, [userEmail]);
-      if (!rows[0]) {
+      const { rows } = await pool.query(deleteQuery, [req.params.email]);
+      if (rows.length < 1) {
         return res.status(404).send({
           status: 404,
           message: `User with email ${req.params.email} is not found`
