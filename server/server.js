@@ -12,10 +12,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // home route
-
-app.use(router);
 app.use(cors());
-app.use(method);
+
+// app.options('*', cors());
+app.use(router);
+// app.use(method);
 dotenv.config();
 app.get('/', (req, res) => {
   return res.status(200).send({
