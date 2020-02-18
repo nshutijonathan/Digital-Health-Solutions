@@ -12,6 +12,7 @@ export const CreateTables = () => {
   location VARCHAR(20) NOT NULL,
     usertype VARCHAR(20) NOT NULL,
     phone VARCHAR(20) NOT NULL,
+    gender VARCHAR(10) NOT NULL,
     approved BOOLEAN  NOT NULL DEFAULT false,
     verified BOOLEAN NOT NULL DEFAULT false,
     createdOn TIMESTAMP NOT NULL  DEFAULT NOW()
@@ -74,7 +75,7 @@ export const Droptables = () => {
 };
 export const AdminIndex = () => {
   const hash = bcrypt.hashSync(process.env.adminPassword, 8);
-  const admin = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,verified,approved) VALUES('${process.env.adminEmail}','jonathan','nshuti','${hash}','kigali','admin','+250789083823',true,true
+  const admin = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,verified,approved) VALUES('${process.env.adminEmail}','jonathan','nshuti','${hash}','kigali','admin','+250789083823','male',true,true
 ) ON CONFLICT DO NOTHING returning *`;
   pool
     .query(admin)
