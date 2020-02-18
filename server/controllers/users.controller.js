@@ -2,14 +2,11 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import pool from '../database/connect';
 import userHelpers from '../helpers/users';
-import logout from 'express-passport-logout';
-import passport from 'passport';
-import passportHttp from 'passport-http';
 const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
-    const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,createdon) VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`;
+    const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,approved,verified,createdon) VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning *`;
     const values = [
       req.body.email,
       req.body.firstname,
@@ -18,10 +15,15 @@ const Users = {
       req.body.location,
       req.body.usertype,
       req.body.phone,
+      req.body.gender,
+      false,
+      false,
       moment().format('LL')
     ];
+
     try {
       const { rows } = await pool.query(createQuery, values);
+      console.log('=======', rows);
       const token = jwt.sign(
         {
           id: rows[0].id,
@@ -68,8 +70,8 @@ const Users = {
       });
     }
     const hashpassword = userHelpers.hashPassword(req.body.password);
-    const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,createdon) VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8) returning *`;
+    const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,approved,verified,createdon) VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning *`;
     const values = [
       req.body.email,
       req.body.firstname,
@@ -78,10 +80,14 @@ const Users = {
       req.body.location,
       req.body.usertype,
       req.body.phone,
+      req.body.gender,
+      false,
+      false,
       moment().format('LL')
     ];
     try {
       const { rows } = await pool.query(createQuery, values);
+      console.log('======', rows);
       const token = jwt.sign(
         {
           id: rows[0].id,
