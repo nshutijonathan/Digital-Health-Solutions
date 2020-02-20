@@ -14,7 +14,7 @@ router.post(
 router.post('/api/v1/users/login', Users.login);
 router.get('/api/v1/users/logout', [auth], Users.logout);
 router.get('/api/v1/users/me', [auth], Users.currentUsers);
-router.get('/api/v1/users/all', [auth, admin], Users.allUsers);
+router.get('/api/v1/users/all', Users.allUsers);
 router.delete(
   '/api/v1/users/delete/:email',
   [auth, admin],
