@@ -1,14 +1,16 @@
 import express from 'express';
 import Users from '../controllers/users.controller';
+import Labs from '../controllers/labs.controller';
 import auth from '../middlewares/auth';
 import admin from '../middlewares/admin';
-import UsersValidators from '../validations/users';
 import signup from '../validations/users';
+import labs from '../validations/labs';
+
 const router = express();
 router.post('/api/v1/users/register', [signup], Users.create);
 router.post(
   '/api/v1/users/register/admins',
-  [signup, auth, admin],
+  [auth, admin, signup],
   Users.adminCreate
 );
 router.post('/api/v1/users/login', Users.login);
@@ -35,4 +37,8 @@ router.get(
   [auth, admin],
   Users.getAllUnApproved
 );
+
+// Labs routes
+
+router.post('/api/v1/labs/create', Labs.create);
 export default router;
