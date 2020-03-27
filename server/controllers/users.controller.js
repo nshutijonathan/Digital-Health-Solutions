@@ -2,9 +2,6 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import pool from '../database/connect';
 import userHelpers from '../helpers/users';
-import logout from 'express-passport-logout';
-import passport from 'passport';
-import passportHttp from 'passport-http';
 const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
