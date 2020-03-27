@@ -5,7 +5,7 @@ const auth = (req, res, next) => {
   if (!token) {
     return res.status(402).send({
       status: 402,
-      message: 'Access Denied.No token provided'
+      message: 'Access Denied.No token provided',
     });
   }
   try {
@@ -16,7 +16,7 @@ const auth = (req, res, next) => {
     console.log(error.message);
     return res.status(400).send({
       status: 400,
-      message: 'Invalid token'
+      message: 'Invalid token',
     });
   }
 };

@@ -2,13 +2,7 @@ import bcrypt from 'bcrypt';
 import pool from './connect';
 
 export const CreateTables = () => {
-  const Users = `CREATE TABLE IF NOT EXISTS 
-	users(
-	id SERIAL PRIMARY KEY,
-	email VARCHAR(30) UNIQUE NOT NULL,
-	firstname VARCHAR(20) NOT NULL,
-	lastname VARCHAR(20) NOT NULL,
-	password VARCHAR(300) NOT NULL ,
+  const Users = `CREATE TABLE IF NOT EXISTS users( id SERIAL PRIMARY KEY,email VARCHAR(30) UNIQUE NOT NULL,firstname VARCHAR(20) NOT NULL,lastname VARCHAR(20) NOT NULL,password VARCHAR(300) NOT NULL ,
   location VARCHAR(20) NOT NULL,
     usertype VARCHAR(20) NOT NULL,
     phone VARCHAR(20) NOT NULL,
@@ -20,7 +14,7 @@ export const CreateTables = () => {
   const Laboratories = `CREATE TABLE IF NOT EXISTS 
   laboratories(
     id SERIAL PRIMARY KEY,
-    labname VARCHAR(20) NOT NULL,
+    labname VARCHAR(20) UNIQUE NOT NULL ,
     location VARCHAR(20) NOT NULL,
     doctor SERIAL NOT NULL,
     createdOn TIMESTAMP NOT NULL  DEFAULT NOW(),
@@ -75,7 +69,7 @@ export const Droptables = () => {
 };
 export const AdminIndex = () => {
   const hash = bcrypt.hashSync(process.env.adminPassword, 8);
-  const admin = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,verified,approved) VALUES('${process.env.adminEmail}','jonathan','nshuti','${hash}','kigali','admin','+250789083823','male',true,true
+  const admin = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,verified,approved) VALUES('${process.env.adminEmail}','Jonathan','Nshuti','${hash}','kigali','admin','+250789083823','male',true,true
 ) ON CONFLICT DO NOTHING returning *`;
   pool
     .query(admin)

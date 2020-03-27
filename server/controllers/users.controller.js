@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import _ from 'lodash';
 import pool from '../database/connect';
 import userHelpers from '../helpers/users';
+
 const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
@@ -9,16 +11,16 @@ const Users = {
         ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning *`;
     const values = [
       req.body.email,
-      req.body.firstname,
-      req.body.lastname,
+      _.capitalize(req.body.firstname),
+      _.capitalize(req.body.lastname),
       hashpassword,
-      req.body.location,
-      req.body.usertype,
+      _.capitalize(req.body.location),
+      _.capitalize(req.body.usertype),
       req.body.phone,
-      req.body.gender,
+      _.capitalize(req.body.gender),
       false,
       false,
-      moment().format('LL')
+      moment().format('LL'),
     ];
 
     try {
@@ -28,31 +30,31 @@ const Users = {
         {
           id: rows[0].id,
           email: rows[0].email,
-          usertype: rows[0].usertype
+          usertype: rows[0].usertype,
         },
         process.env.SECRET_KEY,
-        { expiresIn: '24hrs' }
+        { expiresIn: '24hrs' },
       );
       return res.status(201).send({
         status: 201,
         message: 'User is successfully created',
         token,
         data: {
-          rows
-        }
+          rows,
+        },
       });
     } catch (error) {
       if (error.routine == '_bt_check_unique') {
         return res.status(409).send({
           status: 409,
-          message: 'Email already exist'
+          message: 'Email already exist',
         });
       }
       if (error) {
         console.log('****************', error);
         return res.status(400).send({
           status: 400,
-          message: error.message
+          message: error.message,
         });
       }
     }
@@ -66,7 +68,7 @@ const Users = {
     if (foundUser.rowCount === 0) {
       return res.status(404).send({
         status: 404,
-        message: 'This token owner is no longer in db'
+        message: 'This token owner is no longer in db',
       });
     }
     const hashpassword = userHelpers.hashPassword(req.body.password);
@@ -74,16 +76,16 @@ const Users = {
         ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning *`;
     const values = [
       req.body.email,
-      req.body.firstname,
-      req.body.lastname,
+      _.capitalize(req.body.firstname),
+      _.capitalize(req.body.lastname),
       hashpassword,
-      req.body.location,
-      req.body.usertype,
+      _.capitalize(req.body.location),
+      _.capitalize(req.body.usertype),
       req.body.phone,
-      req.body.gender,
+      _.capitalize(req.body.gender),
       false,
       false,
-      moment().format('LL')
+      moment().format('LL'),
     ];
     try {
       const { rows } = await pool.query(createQuery, values);
@@ -92,37 +94,37 @@ const Users = {
         {
           id: rows[0].id,
           email: rows[0].email,
-          usertype: rows[0].usertype
+          usertype: rows[0].usertype,
         },
         process.env.SECRET_KEY,
-        { expiresIn: '24hrs' }
+        { expiresIn: '24hrs' },
       );
       return res.status(201).send({
         status: 201,
         message: 'User is successfully created',
         token,
         data: {
-          rows
-        }
+          rows,
+        },
       });
     } catch (error) {
       if (error.routine == '_bt_check_unique') {
         return res.status(409).send({
           status: 409,
-          message: 'Email already exist'
+          message: 'Email already exist',
         });
       }
     }
     return res.status(400).send({
       status: 400,
-      message: error.message
+      message: error.message,
     });
   },
   async login(req, res) {
     if (!req.body.email || !req.body.password) {
       return res.status(400).send({
         status: 400,
-        message: 'some values are missing'
+        message: 'some values are missing',
       });
     }
     const text = 'SELECT * FROM users WHERE email=$1 ';
@@ -131,13 +133,13 @@ const Users = {
       if (!rows[0]) {
         return res.status(401).send({
           status: 401,
-          message: 'INVALID email or password'
+          message: 'INVALID email or password',
         });
       }
       if (!userHelpers.comparePassword(rows[0].password, req.body.password)) {
         return res.status(401).send({
           status: 401,
-          message: 'INVALID email or password'
+          message: 'INVALID email or password',
         });
       }
       const token = jwt.sign(
@@ -146,20 +148,20 @@ const Users = {
           email: rows[0].email,
           usertype: rows[0].usertype,
           verified: rows[0].verified,
-          approved: rows[0].approved
+          approved: rows[0].approved,
         },
         process.env.SECRET_KEY,
-        { expiresIn: '24hrs' }
+        { expiresIn: '24hrs' },
       );
       return res.status(200).send({
         status: 200,
         message: 'successfully logged in',
-        token
+        token,
       });
     } catch (error) {
       return res.status(400).send({
         status: 400,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -167,23 +169,23 @@ const Users = {
     const user = req.user.email;
     try {
       const { rows } = await pool.query('SELECT * FROM users WHERE email=$1', [
-        user
+        user,
       ]);
       if (rows.length > 0) {
         return res.status(200).send({
           status: 200,
           message: 'Current user successfully retrieved',
-          data: rows[0]
+          data: rows[0],
         });
       }
       return res.status(404).send({
         status: 404,
-        message: 'Current  user not found'
+        message: 'Current  user not found',
       });
     } catch (error) {
       return res.status(400).send({
         status: 400,
-        message: error.message
+        message: error.message,
       });
     }
   },
@@ -194,7 +196,7 @@ const Users = {
     console.log('req', req.headers['x-auth-token']);
     return res.status(401).send({
       status: 401,
-      message: 'Logged out'
+      message: 'Logged out',
     });
   },
   async allUsers(req, res) {
@@ -204,19 +206,19 @@ const Users = {
       return res.status(200).send({
         status: 200,
         message: 'Users successfully retrieved',
-        data: rows
+        data: rows,
       });
     } catch (error) {
       return res.status(400).send({
         status: 400,
-        message: error.message
+        message: error.message,
       });
     }
   },
   async approveUsers(req, res) {
     try {
       const userEmail = req.params.email;
-      const findUser = `SELECT * FROM users WHERE email=$1 `;
+      const findUser = 'SELECT * FROM users WHERE email=$1 ';
       // const gottenUsers = await pool.query(findUser);
       // console.log('gootenUsers', gottenUsers);
       const foundUser = await pool.query(findUser, [userEmail]);
@@ -224,31 +226,30 @@ const Users = {
       if (foundUser.rowCount === 0) {
         return res.status(404).send({
           status: 404,
-          message: `User with email ${req.params.email} is not found`
+          message: `User with email ${req.params.email} is not found`,
         });
       }
       if (foundUser.rows[0].approved) {
         return res.status(400).send({
           status: 400,
-          message: `User with email ${req.params.email} is already approved`
+          message: `User with email ${req.params.email} is already approved`,
         });
       }
-      const approveUser =
-        'UPDATE users SET approved=$1 WHERE email=$2 RETURNING *';
+      const approveUser = 'UPDATE users SET approved=$1 WHERE email=$2 RETURNING *';
       const { rows } = await pool.query(approveUser, [
         req.body.approved,
-        userEmail
+        userEmail,
       ]);
       return res.status(200).send({
         status: 200,
         message: `User with email ${req.params.email} is successfully approved`,
-        data: rows
+        data: rows,
       });
     } catch (error) {
       if (error) {
         return res.status(400).send({
           status: 400,
-          message: error.message
+          message: error.message,
         });
       }
     }
@@ -261,7 +262,7 @@ const Users = {
       return res.status(200).send({
         status: 200,
         message: 'All approved users successfully returned',
-        data: rows
+        data: rows,
       });
     } catch (error) {
       return error.message;
@@ -275,7 +276,7 @@ const Users = {
       return res.status(200).send({
         status: 200,
         message: 'All unapproved users successfully returned',
-        data: rows
+        data: rows,
       });
     } catch (error) {
       return error.message;
@@ -288,18 +289,18 @@ const Users = {
       if (rows.length < 1) {
         return res.status(404).send({
           status: 404,
-          message: `User with email ${req.params.email} is not found`
+          message: `User with email ${req.params.email} is not found`,
         });
       }
       return res.status(200).send({
         status: 200,
-        message: `User with email ${req.params.email} is succesfully deleted`
+        message: `User with email ${req.params.email} is succesfully deleted`,
       });
     } catch (error) {
       if (error) {
         return error.message;
       }
     }
-  }
+  },
 };
 export default Users;

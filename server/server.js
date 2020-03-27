@@ -2,9 +2,8 @@ import '@babel/polyfill/noConflict';
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import router from '../server/routes/users.routes';
-import method from './middlewares/methods';
 import cors from 'cors';
+import router from './routes/users.routes';
 // creating app instance
 const app = express();
 // body-parser middleware
@@ -18,13 +17,13 @@ app.use(cors());
 app.use(router);
 // app.use(method);
 dotenv.config();
-app.get('/', (req, res) => {
-  return res.status(200).send({
+app.get('/', (req, res) =>
+  res.status(200).send({
     status: 200,
     message: 'Welcome to Digital Health Solutions'
-  });
-});
+  })
+);
 // process environment
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, console.log(`app is listening on port ${port}`));
 export default app;
