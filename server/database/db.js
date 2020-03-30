@@ -38,11 +38,11 @@ export const CreateTables = () => {
   const Queries = `${Users};${Laboratories};${LaboratoriesResults}`;
   pool
     .query(Queries)
-    .then(res => {
+    .then((res) => {
       pool.end();
       console.log(res);
     })
-    .catch(err => {
+    .catch((err) => {
       pool.end();
       console.log(err);
     });
@@ -50,16 +50,15 @@ export const CreateTables = () => {
 export const Droptables = () => {
   const Users = 'DROP TABLE IF EXISTS users CASCADE';
   const Laboratories = 'DROP TABLE IF EXISTS laboratories CASCADE';
-  const LaboratoriesResults =
-    'DROP TABLE  IF EXISTS laboratoriesResults CASCADE';
+  const LaboratoriesResults = 'DROP TABLE  IF EXISTS laboratoriesResults CASCADE';
   const Queries = `${Users};${Laboratories};${LaboratoriesResults}`;
   pool
     .query(Queries)
-    .then(res => {
+    .then((res) => {
       pool.end();
       console.log(res);
     })
-    .catch(err => {
+    .catch((err) => {
       pool.end();
       console.log(err);
     });
@@ -73,10 +72,10 @@ export const AdminIndex = () => {
 ) ON CONFLICT DO NOTHING returning *`;
   pool
     .query(admin)
-    .then(res => {
+    .then((res) => {
       pool.end();
     })
-    .catch(err => {
+    .catch((err) => {
       pool.end();
       console.log('error', err);
     });

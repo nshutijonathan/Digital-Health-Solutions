@@ -17,12 +17,10 @@ app.use(cors());
 app.use(router);
 // app.use(method);
 dotenv.config();
-app.get('/', (req, res) =>
-  res.status(200).send({
-    status: 200,
-    message: 'Welcome to Digital Health Solutions'
-  })
-);
+app.get('/', (req, res) => res.status(200).send({
+  status: 200,
+  message: 'Welcome to Digital Health Solutions'
+}));
 // process environment
 const port = process.env.PORT || 5000;
 app.listen(port, console.log(`app is listening on port ${port}`));

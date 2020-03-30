@@ -40,6 +40,10 @@ router.get(
 
 // Labs routes
 
-router.post('/api/v1/labs/create', [labsValidation], Labs.create);
-router.get('/api/v1/labs/all', Labs.allLabs);
+router.post('/api/v1/labs/create', [auth, admin], Labs.create);
+router.get('/api/v1/labs/all', [auth, admin], Labs.allLabs);
+router.get('/api/v1/labs/one/:labname', [auth, admin], Labs.oneLab);
+router.delete('/api/v1/labs/delete/:labname', [auth, admin], Labs.deleteLab);
+router.put('/api/v1/labs/update/:labname', [auth, admin], Labs.updateLab);
+
 export default router;
