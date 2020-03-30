@@ -1,6 +1,6 @@
 import validator from 'validator';
 
-const labs = (req, res, next) => {
+const labsValidation = (req, res, next) => {
   if (validator.isEmpty(req.body.labname)) {
     return res.status(400).send({
       message: 'labname is required'
@@ -11,9 +11,9 @@ const labs = (req, res, next) => {
       message: 'lab location is required'
     });
   }
-  if (validator.isEmpty(req.body.doctor.toString())) {
+  if (validator.isEmpty(req.body.doctorId)) {
     return res.status(400).send({
-      message: 'doctorId is required'
+      message: 'Doctor id is required'
     });
   }
   if (req.body.doctor < 1) {
@@ -23,4 +23,4 @@ const labs = (req, res, next) => {
   }
   next();
 };
-export default labs;
+export default labsValidation;

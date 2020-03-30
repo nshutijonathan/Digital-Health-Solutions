@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import router from './routes/users.routes';
+import router from './routes/routes';
 // creating app instance
 const app = express();
 // body-parser middleware

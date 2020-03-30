@@ -16,9 +16,9 @@ export const CreateTables = () => {
     id SERIAL PRIMARY KEY,
     labname VARCHAR(20) UNIQUE NOT NULL ,
     location VARCHAR(20) NOT NULL,
-    doctor SERIAL NOT NULL,
+    doctorId SERIAL NOT NULL,
     createdOn TIMESTAMP NOT NULL  DEFAULT NOW(),
-    FOREIGN KEY (doctor) REFERENCES users(id) ON DELETE CASCADE 
+    FOREIGN KEY (doctorId) REFERENCES users(id) ON DELETE CASCADE 
   )
   `;
   const LaboratoriesResults = `CREATE TABLE IF NOT EXISTS

@@ -4,7 +4,7 @@ import Labs from '../controllers/labs.controller';
 import auth from '../middlewares/auth';
 import admin from '../middlewares/admin';
 import signup from '../validations/users';
-import labs from '../validations/labs';
+import labsValidation from '../validations/labs';
 
 const router = express();
 router.post('/api/v1/users/register', [signup], Users.create);
@@ -40,5 +40,6 @@ router.get(
 
 // Labs routes
 
-router.post('/api/v1/labs/create', Labs.create);
+router.post('/api/v1/labs/create', [labsValidation], Labs.create);
+router.get('/api/v1/labs/all', Labs.allLabs);
 export default router;
