@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { response } from 'express';
 import pool from '../database/connect';
 
 const Labs = {
   async create(req, res) {
-    const createQuery = 'INSERT INTO laboratories(labname,location,doctorId,createdon)VALUES($1,$2,$3,$4) returning *';
+    const createQuery =
+      'INSERT INTO laboratories(labname,location,doctorId,createdon)VALUES($1,$2,$3,$4) returning *';
 
     const values = [
       _.capitalize(req.body.labname),
@@ -16,7 +16,7 @@ const Labs = {
 
     try {
       const { rows } = await pool.query(createQuery, values);
-      return res.status(200).send({
+      return res.status(201).send({
         message: 'Lab is sucessfully created',
         data: {
           rows
@@ -100,7 +100,8 @@ const Labs = {
         });
       }
 
-      const updateLab = 'UPDATE laboratories SET labname=$1,location=$2,doctorId=$3 WHERE labname=$4';
+      const updateLab =
+        'UPDATE laboratories SET labname=$1,location=$2,doctorId=$3 WHERE labname=$4';
       const { labname, location, doctorId } = req.body;
       const { rows } = await pool.query(updateLab, [
         labname,
