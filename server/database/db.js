@@ -25,6 +25,7 @@ export const CreateTables = () => {
   laboratoriesResults(
     id SERIAL PRIMARY KEY,
     patientId SERIAL NOT NULL,
+    patientphone VARCHAR(15) NOT NULL,
     labId SERIAL NOT NULL,
     doctorId SERIAL NOT NULL,
     result VARCHAR(90) NOT NULL,
@@ -38,11 +39,11 @@ export const CreateTables = () => {
   const Queries = `${Users};${Laboratories};${LaboratoriesResults}`;
   pool
     .query(Queries)
-    .then((res) => {
+    .then(res => {
       pool.end();
       console.log(res);
     })
-    .catch((err) => {
+    .catch(err => {
       pool.end();
       console.log(err);
     });
@@ -50,15 +51,16 @@ export const CreateTables = () => {
 export const Droptables = () => {
   const Users = 'DROP TABLE IF EXISTS users CASCADE';
   const Laboratories = 'DROP TABLE IF EXISTS laboratories CASCADE';
-  const LaboratoriesResults = 'DROP TABLE  IF EXISTS laboratoriesResults CASCADE';
+  const LaboratoriesResults =
+    'DROP TABLE  IF EXISTS laboratoriesResults CASCADE';
   const Queries = `${Users};${Laboratories};${LaboratoriesResults}`;
   pool
     .query(Queries)
-    .then((res) => {
+    .then(res => {
       pool.end();
       console.log(res);
     })
-    .catch((err) => {
+    .catch(err => {
       pool.end();
       console.log(err);
     });
@@ -72,10 +74,10 @@ export const AdminIndex = () => {
 ) ON CONFLICT DO NOTHING returning *`;
   pool
     .query(admin)
-    .then((res) => {
+    .then(res => {
       pool.end();
     })
-    .catch((err) => {
+    .catch(err => {
       pool.end();
       console.log('error', err);
     });
