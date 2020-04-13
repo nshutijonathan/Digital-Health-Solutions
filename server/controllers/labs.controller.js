@@ -16,7 +16,7 @@ const Labs = {
 
     try {
       const { rows } = await pool.query(createQuery, values);
-      return res.status(200).send({
+      return res.status(201).send({
         message: 'Lab is sucessfully created',
         data: {
           rows
