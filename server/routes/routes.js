@@ -5,9 +5,7 @@ import Results from '../controllers/results.controller';
 import auth from '../middlewares/auth';
 import admin from '../middlewares/admin';
 import signup from '../validations/users';
-import labsValidation from '../validations/labs';
-
-const router = express();
+const router = express.Router();
 router.post('/api/v1/users/register', [signup], Users.create);
 router.post(
   '/api/v1/users/register/admins',

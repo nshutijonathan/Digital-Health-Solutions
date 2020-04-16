@@ -44,6 +44,7 @@ const Users = {
         },
       });
     } catch (error) {
+      console.log("error",error)
       if (error.routine == '_bt_check_unique') {
         return res.status(409).send({
           status: 409,
@@ -200,7 +201,9 @@ const Users = {
     });
   },
   async allUsers(req, res) {
+    
     try {
+      
       const text = 'SELECT * FROM users';
       const { rows } = await pool.query(text);
       return res.status(200).send({
@@ -209,6 +212,7 @@ const Users = {
         data: rows,
       });
     } catch (error) {
+      console.log("error",error)
       return res.status(400).send({
         status: 400,
         message: error.message,
