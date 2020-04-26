@@ -5,6 +5,7 @@ import Results from '../controllers/results.controller';
 import auth from '../middlewares/auth';
 import admin from '../middlewares/admin';
 import signup from '../validations/users';
+import LogsGotten from '../controllers/logs.controller';
 const router = express.Router();
 router.post('/api/v1/users/register', [signup], Users.create);
 router.post(
@@ -15,7 +16,7 @@ router.post(
 router.post('/api/v1/users/login', Users.login);
 router.get('/api/v1/users/logout', [auth], Users.logout);
 router.get('/api/v1/users/me', [auth], Users.currentUsers);
-router.get('/api/v1/users/all', Users.allUsers);
+router.get('/api/v1/users/all', [auth, admin],Users.allUsers);
 router.delete(
   '/api/v1/users/delete/:email',
   [auth, admin],
@@ -52,4 +53,7 @@ router.get('/api/v1/results/all', [auth], Results.allResults);
 router.get('/api/v1/results/one/:id', [auth], Results.oneResult);
 router.delete('/api/v1/results/delete/one/:id', [auth], Results.deleteResult);
 router.put('/api/v1/results/update/one/:id', [auth], Results.updateResult);
+
+//Logs route
+router.get('/api/v1/logs',LogsGotten.getAllLogs);
 export default router;

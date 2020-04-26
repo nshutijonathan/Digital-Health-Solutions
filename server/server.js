@@ -4,19 +4,21 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import router from './routes/routes';
+import {demoLogger} from './middlewares/demo.logger';
 // creating app instance
 const app = express();
 // body-parser middleware
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// home route
-app.use(cors());
 
 // app.options('*', cors());
+app.use(cors());
+app.use(demoLogger);
 app.use(router);
 // app.use(method);
 dotenv.config();
+// home route
 app.get('/', (req, res) => res.status(200).send({
   status: 200,
   message: 'Welcome to Digital Health Solutions'

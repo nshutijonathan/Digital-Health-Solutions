@@ -3,7 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import pool from '../database/connect';
 import userHelpers from '../helpers/users';
-
+import nodemailer from 'nodemailer';
 const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
@@ -35,6 +35,27 @@ const Users = {
         process.env.SECRET_KEY,
         { expiresIn: '24hrs' },
       );
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'digitalhealth130',
+          pass: process.env.mypass
+        }
+      });
+      
+      const  mailOptions = {
+        from: 'digitalhealth130@gmail.com',
+        to: req.body.email,
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
       return res.status(201).send({
         status: 201,
         message: 'User is successfully created',
@@ -101,6 +122,7 @@ const Users = {
         { expiresIn: '24hrs' },
       );
       return res.status(201).send({
+        
         status: 201,
         message: 'User is successfully created',
         token,
