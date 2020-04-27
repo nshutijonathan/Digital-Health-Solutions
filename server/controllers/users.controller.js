@@ -4,6 +4,7 @@ import _ from 'lodash';
 import pool from '../database/connect';
 import userHelpers from '../helpers/users';
 import nodemailer from 'nodemailer';
+import removePswd from '../middlewares/removePswd';
 const Users = {
   async create(req, res) {
     const hashpassword = userHelpers.hashPassword(req.body.password);
@@ -228,6 +229,8 @@ const Users = {
       
       const text = 'SELECT * FROM users';
       const { rows } = await pool.query(text);
+      removePswd(rows);
+      console.log("dddd",rows)
       return res.status(200).send({
         status: 200,
         message: 'Users successfully retrieved',
