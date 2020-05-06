@@ -7,6 +7,7 @@ import admin from '../middlewares/admin';
 import signup from '../validations/users';
 import LogsGotten from '../controllers/logs.controller';
 const router = express.Router();
+//Users route
 router.post('/api/v1/users/register', [signup], Users.create);
 router.post(
   '/api/v1/users/register/admins',
@@ -27,6 +28,7 @@ router.put(
   [auth, admin],
   Users.approveUsers
 );
+router.get('/verify',Users.verifyOneEmail)
 router.get(
   '/api/v1/users/doctors/approved',
   [auth, admin],

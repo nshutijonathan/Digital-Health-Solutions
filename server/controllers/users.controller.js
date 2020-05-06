@@ -5,8 +5,13 @@ import pool from '../database/connect';
 import userHelpers from '../helpers/users';
 import nodemailer from 'nodemailer';
 import removePswd from '../middlewares/removePswd';
+
+let host;
+let rand;
 const Users = {
   async create(req, res) {
+    rand=Math.floor((Math.random() * 100) + 54);
+    let link="http://"+req.get('host')+"/verify?id="+rand+req.body.email;
     const hashpassword = userHelpers.hashPassword(req.body.password);
     const createQuery = `INSERT INTO users(email,firstname,lastname,password,location,usertype,phone,gender,approved,verified,createdon) VALUES
         ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) returning *`;
@@ -32,10 +37,12 @@ const Users = {
           id: rows[0].id,
           email: rows[0].email,
           usertype: rows[0].usertype,
+          verified:rows[0].verified,
         },
         process.env.SECRET_KEY,
         { expiresIn: '24hrs' },
       );
+      removePswd(rows);
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -44,12 +51,34 @@ const Users = {
         }
       });
       
+      
       const  mailOptions = {
         from: 'digitalhealth130@gmail.com',
         to: req.body.email,
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        subject: 'Confirm your email',
+        text: `Hello ${req.body.firstname} you have registered to Digital-Health-Solutions Please confirm your email`,
+        html:`<div style="width: 90%; margin: 5rem auto; box-shadow: 0 0 10px rgba(0,0,0,.9);">
+        <div>
+            <div>
+                <div style="background-color: #2084ba; height: 3rem; width: 100%">
+                    <h2 style="text-align: center; color: white; padding-top: 10px;">Digital Health Solutions</h2>
+                </div>
+                <h4 style="text-align: center">Hi! ${req.body.firstname}</h4>
+            </div>
+            <div style=" padding: 0px 20px 20px 20px">
+                <div>
+                <p>Please verify that your email <strong>${req.body.email}</strong> you used when signing up for the Digital Health Solutions exists.</p>
+                <a href="${link}">Click here to verify</a>
+                
+            </div>
+            <div>
+                <h3 style="text-align: center">Thank you</h3>
+            </div>
+            </div>
+        </div>
+    </div>`
       };
+      console.log("llll",mailOptions["link"])
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
           console.log(error);
@@ -112,6 +141,7 @@ const Users = {
     ];
     try {
       const { rows } = await pool.query(createQuery, values);
+      
       console.log('======', rows);
       const token = jwt.sign(
         {
@@ -159,6 +189,11 @@ const Users = {
           status: 401,
           message: 'INVALID email or password',
         });
+      }
+      if(rows[0].verified===false){
+        return res.status(401).send({
+          message:'Verify your email first'
+        })
       }
       if (!userHelpers.comparePassword(rows[0].password, req.body.password)) {
         return res.status(401).send({
@@ -269,6 +304,7 @@ const Users = {
         req.body.approved,
         userEmail,
       ]);
+      removePswd(rows);
       return res.status(200).send({
         status: 200,
         message: `User with email ${req.params.email} is successfully approved`,
@@ -282,6 +318,101 @@ const Users = {
         });
       }
     }
+  },
+  async verifyOneEmail(req,res){
+    host=req.get('host');
+    console.log(req.query.id);
+    console.log(rand)
+    console.log(req.protocol)
+    console.log(req.protocol+":/"+req.get('host'));
+    console.log("http://"+`${host}`);
+    console.log((req.protocol+"://"+req.get('host'))===("http://"+host));
+    if((req.protocol+"://"+req.get('host'))==("http://"+host))
+{
+    console.log("Domain is matched. Information is from Authentic email");
+    if(req.query.id==rand+req.query.email)
+    {
+       try{
+    const userEmail = req.query.email;
+    const findUser = 'SELECT * FROM users WHERE email=$1 ';
+    const foundUser = await pool.query(findUser, [userEmail]);
+    if (foundUser.rowCount === 0) {
+      return res.status(404).send({
+        status: 404,
+        message: `User with email ${req.query.email} is not found`,
+      });
+    }
+    if (foundUser.rows[0].verified) {
+      return res.status(400).send({
+        status: 400,
+        message: `User with email ${req.params.email} is already verified`,
+      });
+    }
+    const approveUser = 'UPDATE users SET verified=true WHERE email=$1 RETURNING *';
+      const { rows } = await pool.query(approveUser, [userEmail,
+      ]);
+      removePswd(rows);
+      return res.status(200).send({
+        status: 200,
+        message: `User with email ${req.body.email} is successfully verified`,
+        data: rows,
+      });
+    } catch (error) {
+      if (error) {
+        return res.status(400).send({
+          status: 400,
+          message: error.message,
+        });
+      }
+    }
+    }
+    else
+    {
+  
+        return res.status(404).send({
+          message:"Bad Request"
+        })
+    }
+}
+else
+{
+    return res.status(404).send({
+      message:"Request is from unknown source"
+    })
+}
+    // try{
+    // const userEmail = req.params.email;
+    // const findUser = 'SELECT * FROM users WHERE email=$1 ';
+    // const foundUser = await pool.query(findUser, [userEmail]);
+    // if (foundUser.rowCount === 0) {
+    //   return res.status(404).send({
+    //     status: 404,
+    //     message: `User with email ${req.params.email} is not found`,
+    //   });
+    // }
+    // if (foundUser.rows[0].verified) {
+    //   return res.status(400).send({
+    //     status: 400,
+    //     message: `User with email ${req.params.email} is already verified`,
+    //   });
+    // }
+    // const approveUser = 'UPDATE users SET verified=true WHERE email=$1 RETURNING *';
+    //   const { rows } = await pool.query(approveUser, [userEmail,
+    //   ]);
+    //   removePswd(rows);
+    //   return res.status(200).send({
+    //     status: 200,
+    //     message: `User with email ${req.params.email} is successfully verified`,
+    //     data: rows,
+    //   });
+    // } catch (error) {
+    //   if (error) {
+    //     return res.status(400).send({
+    //       status: 400,
+    //       message: error.message,
+    //     });
+    //   }
+    // }
   },
   async getAllApproved(req, res) {
     try {
@@ -330,6 +461,6 @@ const Users = {
         return error.message;
       }
     }
-  },
+  }
 };
 export default Users;
